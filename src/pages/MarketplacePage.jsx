@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AxiosContext } from '../context/AxiosContext';
-import { Box, Button, Dialog, DialogContent } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import Navbar from '../components/Navbar';
 import Gallery from '../components/Gallery';
-import FilterComponent from '../components/FilterComponent';  // Import FilterComponent
+import FilterComponent from '../components/FilterComponent';
 import WritersCard from '../components/WritersCard';
 import OriginalIpCard from '../components/OriginalIpCard';
 import { getAssestsWriters, getAssestsOriginalIps } from '../services/marketplaceService';
@@ -17,8 +17,7 @@ const MarketplacePage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('writers');
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedData, setSelectedData] = useState(null);
+  const [expandedCardId, setExpandedCardId] = useState(null); // Track which card is expanded
   const [filterOptions, setFilterOptions] = useState({
     languages: [],
     assetsLanguages: [],
@@ -28,7 +27,6 @@ const MarketplacePage = () => {
   });
 
   useEffect(() => {
-    // Fetch filter options from the backend
     const fetchFilterOptions = async () => {
       try {
         const response = await axiosInstance.get('/marketplace/assets/originalips/filters');
@@ -42,65 +40,60 @@ const MarketplacePage = () => {
   }, []);
 
   useEffect(() => {
-    // Reset state when the category or filters change
-    setData([]); // Clear previous data
-    setPage(1);  // Reset page to 1
-    setHasMore(true); // Reset hasMore to true
-    setLoading(true); // Show loading initially
-    fetchMoreData(1, filters, searchQuery); // Fetch the first page of the new category or filters
+    setData([]); 
+    setPage(1); 
+    setHasMore(true); 
+    setLoading(true); 
+    fetchMoreData(1, filters, searchQuery);
   }, [selectedCategory, filters, searchQuery]);
 
   const fetchMoreData = async (pageNumber = page, filters = {}, searchQuery = '') => {
     if (loading || !hasMore) return;
 
-    setLoading(true); // Prevent multiple simultaneous requests
+    setLoading(true);
 
     try {
       const response = await (selectedCategory === 'writers'
         ? getAssestsWriters(axiosInstance, pageNumber)
-        : getAssestsOriginalIps(axiosInstance, pageNumber, filters, searchQuery)); // Pass filters and search query
+        : getAssestsOriginalIps(axiosInstance, pageNumber, filters, searchQuery));
 
       const newData = response.data;
 
-      // Append new data to the existing data array
       setData((prevData) => [...prevData, ...newData]);
 
-      // Update pagination state
       const { pagination } = response;
-      setHasMore(pagination.hasMore); // Check if there's more data to load
-      setPage((prevPage) => prevPage + 1); // Increment the page
+      setHasMore(pagination.hasMore);
+      setPage((prevPage) => prevPage + 1);
 
     } catch (error) {
       console.error('Error fetching data:', error);
-      setHasMore(false); // Stop further requests on error
+      setHasMore(false);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
+  // Handle card click to toggle expansion
   const handleCardClick = (item) => {
-    setSelectedData(item);
-    setDialogOpen(true);
+    setExpandedCardId(item._id === expandedCardId ? null : item._id); // Toggle expanded card
   };
 
-  // Handle filters and search query from FilterComponent
   const applyFilters = (newFilters, searchQuery) => {
     setFilters(newFilters);
     setSearchQuery(searchQuery);
-    setHasMore(true);  // Reset hasMore for new data
-    setData([]);  // Clear previous data
-    fetchMoreData(1, newFilters, searchQuery);  // Fetch new data starting from page 1
+    setHasMore(true);  
+    setData([]);  
+    fetchMoreData(1, newFilters, searchQuery);  
   };
 
   return (
     <>
       <Navbar />
       <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', mt: 8, flexDirection: 'column' }}>
-        {/* Filters */}
-        { selectedCategory == "originalIps" &&
-          <FilterComponent applyFilters={applyFilters} filterOptions={filterOptions} />}
+        {selectedCategory === "originalIps" && (
+          <FilterComponent applyFilters={applyFilters} filterOptions={filterOptions} />
+        )}
 
-        {/* Category switch buttons */}
         <Box display="flex" justifyContent="center" mt={2}>
           <Button
             variant={selectedCategory === 'writers' ? 'contained' : 'outlined'}
@@ -117,21 +110,19 @@ const MarketplacePage = () => {
           </Button>
         </Box>
 
-        {/* Gallery Component */}
         <Gallery
           data={data}
           fetchMoreData={fetchMoreData}
           hasMore={hasMore}
           handleCardClick={handleCardClick}
-          CardComponent={selectedCategory === 'writers' ? WritersCard : OriginalIpCard}
+          CardComponent={(props) => (
+            <OriginalIpCard
+              {...props}
+              isExpanded={props.item._id === expandedCardId}  // Determine if the card is expanded
+              handleCardClick={handleCardClick}
+            />
+          )}
         />
-
-        {/* JSON Dialog */}
-        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
-          <DialogContent>
-            <pre>{JSON.stringify(selectedData, null, 2)}</pre>
-          </DialogContent>
-        </Dialog>
       </Box>
     </>
   );
