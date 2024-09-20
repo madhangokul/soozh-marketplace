@@ -96,7 +96,7 @@ const MarketplacePage = () => {
   return (
     <>
       <Navbar />
-      <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', mt: 8, flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', mt: 8, flexDirection: 'column', backgroundColor: 'black' }}>
         {selectedCategory === "originalIps" && (
           <FilterComponent applyFilters={applyFilters} filterOptions={filterOptions} />
         )}

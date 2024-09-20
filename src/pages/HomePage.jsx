@@ -9,7 +9,7 @@ const HomePage = () => {
       <CssBaseline />
       {/* Use Navbar and set page to "home" */}
       <Navbar page="home" />
-      <Box sx={{ mt: 10, textAlign: 'center' }}>
+      <Box sx={{ mt: 10, textAlign: 'center', backgroundColor:'black' }}>
         <h1>Welcome to Soozh Marketplace</h1>
         <p>Your gateway to an amazing shopping experience.</p>
       </Box>
