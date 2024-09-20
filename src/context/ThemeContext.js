@@ -21,8 +21,8 @@ export const CustomThemeProvider = ({ children }) => {
             main: darkMode ? '#90caf9' : '#1976d2',
           },
           background: {
-            default: darkMode ? '#121212' : '#fff',
-            paper: darkMode ? '#424242' : '#fff',
+            default: darkMode ? 'black' : '#fff',
+            paper: darkMode ? 'black' : '#fff',
           },
         },
         typography: {

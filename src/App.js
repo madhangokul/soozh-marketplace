@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import MarketplacePage from './pages/MarketplacePage';
 import { AxiosProvider } from './context/AxiosContext';
 import { CustomThemeProvider } from './context/ThemeContext';  // Add the theme provider
+import './App.css';
 
 function App() {
   return (
