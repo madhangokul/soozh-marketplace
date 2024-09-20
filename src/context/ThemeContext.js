@@ -3,13 +3,15 @@ import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/st
 import { CssBaseline } from '@mui/material';
 
 export const ThemeContext = createContext({
-  darkMode: false,
+  darkMode: true, // Default to dark mode
   toggleDarkMode: () => {}
 });
 
 export const CustomThemeProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(false);
+  // Default darkMode to true for dark theme
+  const [darkMode, setDarkMode] = useState(true);
 
+  // Create theme with Apple system font and dark mode palette
   const theme = useMemo(
     () =>
       createTheme({
@@ -22,6 +24,17 @@ export const CustomThemeProvider = ({ children }) => {
             default: darkMode ? '#121212' : '#fff',
             paper: darkMode ? '#424242' : '#fff',
           },
+        },
+        typography: {
+          fontFamily: [
+            '-apple-system', // Apple devices
+            'BlinkMacSystemFont', // Fallback for older macOS devices
+            '"Segoe UI"', // Windows
+            'Roboto', // Android
+            '"Helvetica Neue"', // iOS/macOS fallback
+            'Arial', // Default web-safe font
+            'sans-serif', // Final fallback
+          ].join(','),
         },
       }),
     [darkMode]
