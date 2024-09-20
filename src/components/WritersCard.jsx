@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 
-const CardComponent = ({ item, handleCardClick }) => (
+const WritersCard = ({ item, handleCardClick }) => (
   <Card
     sx={{
       display: 'flex',
@@ -20,11 +20,11 @@ const CardComponent = ({ item, handleCardClick }) => (
     }}
     onClick={() => handleCardClick(item)}
   >
-    {/* Image with glassmorphism effect */}
+    {/* Image */}
     <Box
       component="img"
-      src={item.userDetails?.profile_path?.value || item.poster || 'https://via.placeholder.com/150'}
-      alt={item.userDetails?.fullName?.value || item.name}
+      src={item.userDetails?.profile_path?.value || 'https://via.placeholder.com/150'}
+      alt={item.userDetails?.fullName?.value || 'Unnamed'}
       sx={{
         width: '100%',
         height: 250,
@@ -36,14 +36,14 @@ const CardComponent = ({ item, handleCardClick }) => (
     <CardContent sx={{ flexGrow: 1 }}>
       {/* Name */}
       <Typography gutterBottom variant="h6" sx={{ color: 'white' }}>
-        {item.userDetails?.fullName?.value || item.name}
+        {item.userDetails?.fullName?.value || 'Unknown Writer'}
       </Typography>
-      {/* Location or Language */}
+      {/* Location */}
       <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-        {item.userDetails?.location?.value || item.language}
+        {item.userDetails?.location?.value || 'Unknown Location'}
       </Typography>
     </CardContent>
   </Card>
 );
 
-export default CardComponent;
+export default WritersCard;

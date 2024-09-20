@@ -1,18 +1,18 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Button, Box, useTheme } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, useMediaQuery } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import StoreIcon from '@mui/icons-material/Store';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles'; // Import useTheme
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme();
+  const theme = useTheme(); // Get the theme from the ThemeProvider
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if in mobile view
 
-  // Function to dynamically render the center text and the button on the right
   const renderNavbarContent = () => {
     if (location.pathname === '/') {
-      // Home Page
       return {
         centerText: 'SOOZH',
         button: (
@@ -22,14 +22,13 @@ const Navbar = () => {
             onClick={() => navigate('/marketplace')}
             startIcon={<StoreIcon />}
           >
-            Go to Marketplace
+            MARKETPLACE
           </Button>
         ),
       };
     } else if (location.pathname === '/marketplace') {
-      // Marketplace Page
       return {
-        centerText: 'Marketplace',
+        centerText: 'MARKETPLACE',
         button: (
           <Button
             variant="outlined"
@@ -49,12 +48,13 @@ const Navbar = () => {
   return (
     <AppBar position="fixed" color="transparent" elevation={0} sx={{ borderBottom: `1px solid ${theme.palette.divider}` }}>
       <Toolbar sx={{ justifyContent: 'space-between', width: '100%' }}>
-        <Box sx={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
-          {/* Center the text relative to the viewport */}
+        <Box 
+          sx={{
+            position: 'absolute', left: isMobile? '5%':'50%', transform:isMobile? '':'translateX(-50%)'
+          }}
+        >
           <Typography variant="h6">{centerText}</Typography>
         </Box>
-
-        {/* Outlined button on the far right */}
         <Box sx={{ ml: 'auto' }}>
           {button}
         </Box>

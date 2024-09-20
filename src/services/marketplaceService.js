@@ -22,13 +22,22 @@ export const getAssestsWriters = async (axiosInstance, page = 1, limit = 20) => 
   }
 };
 
-export const getAssestsOriginalIps = async (axiosInstance, page = 1, limit = 20) => {
+// services/marketplaceService.js
+
+export const getAssestsOriginalIps = async (axiosInstance, page = 1, filters = {}, search = '') => {
+  const queryParams = new URLSearchParams({
+    page,
+    limit: 20,
+    ...filters,  // Filters object will spread into the query
+    search,      // Search query
+  }).toString();
+
   try {
-    const response = await axiosInstance.get(`/marketplace/assets/originalips?page=${page}&limit=${limit}`);
-    console.log(response.data)
-    return response.data;  // Assuming the API response includes data and pagination object
+    const response = await axiosInstance.get(`/marketplace/assets/originalips?${queryParams}`);
+    return response.data;
   } catch (error) {
     console.error('Failed to fetch data:', error);
     throw error;
   }
 };
+

@@ -1,9 +1,8 @@
 import React from 'react';
 import { Box, Grid, Skeleton, useMediaQuery, useTheme } from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import CardComponent from './CardComponent';
 
-const Gallery = ({ data, fetchMoreData, hasMore, handleCardClick }) => {
+const Gallery = ({ data, fetchMoreData, hasMore, handleCardClick, CardComponent }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Adjust grid layout based on screen size
   
